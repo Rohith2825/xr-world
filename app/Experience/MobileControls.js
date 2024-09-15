@@ -21,7 +21,8 @@ function createJoystick(size) {
         mode: 'static',
         dynamicPage: true,
         position: { left: '50px', bottom: '50px'},
-        color: 'rgba(200,200,200,0.8)',
+        color: 'rgb(200,200,200)',
+        restOpacity: 1,
         size:  size
     });
     return joystick;
@@ -56,13 +57,13 @@ function handleEnd(evt, data) {
 }
 
 function handleJumpPress(evt) {
-    evt.target.style.background = 'rgba(200,200,200,0.5)';
+    evt.target.style.background = 'rgba(200,200,200,0.8)';
     const player = new Player();
     player.actions.jump = true;
 }
 
 function handleJumpRelease(evt) {
-    evt.target.style.background = 'rgba(200,200,200,0.1)';
+    evt.target.style.background = 'rgba(200,200,200,0.5)';
     const player = new Player();
     player.actions.jump = false;
 }
