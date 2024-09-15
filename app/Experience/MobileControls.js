@@ -19,6 +19,7 @@ function createJoystick(size) {
     const joystick = nipplejs.create({
         zone: joystick_container,
         mode: 'static',
+        dynamicPage: true,
         position: { left: '50px', bottom: '50px'},
         color: 'rgba(200,200,200,0.8)',
         size:  size
