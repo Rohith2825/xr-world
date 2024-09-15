@@ -3,8 +3,16 @@ import Experience from "../../Experience.js";
 
 import { Capsule } from "three/examples/jsm/math/Capsule";
 
+let instance = null;
 export default class Player {
+
     constructor() {
+        if (instance) {
+            return instance;
+        }
+
+        instance = this;
+
         this.experience = new Experience();
         this.time = this.experience.time;
         this.camera = this.experience.camera;
@@ -22,7 +30,8 @@ export default class Player {
 
         this.player.onFloor = false;
         this.player.gravity = 60;
-
+        this.controllerDirection = new THREE.Vector3();
+        this.upVector = new THREE.Vector3(0, 0, 1);
         this.player.spawn = {
             position: new THREE.Vector3(),
             rotation: new THREE.Euler(),
@@ -46,7 +55,9 @@ export default class Player {
             new THREE.Vector3(),
             0.35
         );
+        this.update = (window.mobileAndTabletCheck() ? this.updateMobile : this.updateKeyboard);
     }
+
 
     initControls() {
         this.actions = {};
@@ -55,14 +66,12 @@ export default class Player {
     onDesktopPointerMove = (e) => {
         if (document.pointerLockElement !== document.body) return;
         this.player.body.rotation.order = this.player.rotation.order;
-
         this.player.body.rotation.x -= e.movementY / 500;
         this.player.body.rotation.y -= e.movementX / 500;
 
         this.player.body.rotation.x = THREE.MathUtils.clamp(
             this.player.body.rotation.x,
-            -Math.PI / 2,
-            Math.PI / 2
+            -Math.PI / 2, Math.PI / 2
         );
     };
 
@@ -152,15 +161,19 @@ export default class Player {
 
         return this.player.direction;
     }
-
     addEventListeners() {
         document.addEventListener("keydown", this.onKeyDown);
         document.addEventListener("keyup", this.onKeyUp);
-        document.addEventListener("pointermove", this.onDesktopPointerMove);
-        document.addEventListener("pointerdown", this.onPointerDown);
+        document.addEventListener("pointermove", this.onDesktopPointerMove); document.addEventListener("pointerdown", this.onPointerDown);
+        document.addEventListener('touchstart', function (event) {
+            if (!event.target.closest('#joystick-container')) {
+                event.preventDefault();  // Prevents the focus loss issue
+            }
+        }, { passive: false });
+
     }
 
-    resize() {}
+    resize() { }
 
     spawnPlayerOutOfBounds() {
         const spawnPos = new THREE.Vector3(12.64, 1.7 + 10, 64.0198);
@@ -173,7 +186,59 @@ export default class Player {
         this.player.collider.end.y += this.player.height;
     }
 
-    update() {
+
+
+
+
+    updateMobile() {
+        const speed =
+            (this.player.onFloor ? 1.75 : 0.2) *
+            this.player.gravity *
+            this.player.speedMultiplier;
+        //The amount of distance we travel between each frame
+        let speedDelta = this.time.delta * speed * 1.6;
+
+        const angle = this.getForwardVector().angleTo(this.upVector);
+        const rotationAxis = new THREE.Vector3(0, 1, 0);
+        const movementDirection = this.controllerDirection
+            .clone()
+            .applyAxisAngle(rotationAxis, angle);
+
+        this.player.velocity.add(movementDirection.multiplyScalar(speedDelta));
+
+        if (this.player.onFloor) {
+            if (this.actions.jump) {
+                this.player.velocity.y = 15;
+            }
+        }
+
+        let damping = Math.exp(-15 * this.time.delta) - 1;
+
+        if (!this.player.onFloor) {
+            this.player.velocity.y -= this.player.gravity * this.time.delta;
+            damping *= 0.1;
+        }
+
+        this.player.velocity.addScaledVector(this.player.velocity, damping);
+
+        const deltaPosition = this.player.velocity
+            .clone()
+            .multiplyScalar(this.time.delta);
+
+        this.player.collider.translate(deltaPosition);
+        this.playerCollisions();
+
+        this.player.body.position.copy(this.player.collider.end);
+        this.player.body.updateMatrixWorld();
+
+        if (this.player.body.position.y < -20) {
+            this.spawnPlayerOutOfBounds();
+        }
+
+    }
+
+    updateKeyboard() {
+
         const speed =
             (this.player.onFloor ? 1.75 : 0.2) *
             this.player.gravity *
@@ -211,7 +276,6 @@ export default class Player {
                 this.player.velocity.y = 15;
             }
         }
-
         let damping = Math.exp(-15 * this.time.delta) - 1;
 
         if (!this.player.onFloor) {

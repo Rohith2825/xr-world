@@ -1,0 +1,40 @@
+.overlay {
+    z-index: 100;
+}
+
+
+.gamepad-overlay {
+    position: absolute; 
+    bottom: 1em;
+    width: 100vw;
+    height: 20vh;
+    display: none;
+    /* display: flex;
+    align-items: center;
+    justify-content: space-between; */
+}
+
+.joystick-container {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    width: var(--button-size)px;
+    height: var(--button-size)px;
+}
+
+.jump-button {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    width: 100px;
+    height: 100px;
+    background: rgba(200, 200, 200, 0.1);
+    border-radius: 25%;
+    border: none;
+    font-size: xx-large;
+    color: rgba(200, 200, 200);
+    font-weight: bold;
+    text-align: center;
+    line-height: 100px;
+}
+
