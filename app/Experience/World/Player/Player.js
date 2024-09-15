@@ -257,7 +257,6 @@ export default class Player {
         yawRotation
         const movementDirection = this.controllerDirection.clone().applyAxisAngle(new THREE.Vector3(0, 1, 0), yawRotation);
 
-movementDirection.normalize();        
         this.player.velocity.add(movementDirection.multiplyScalar(speedDelta));
 
         if (this.player.onFloor) {
