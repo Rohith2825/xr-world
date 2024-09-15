@@ -55,36 +55,36 @@ export default function displayMobileControls() {
     const DEFAULT_BUTTON_SIZE = 120;
     const jumpButton = createGamePadArea(); 
     const joystick = createJoystick(DEFAULT_BUTTON_SIZE);
-    jumpButton.addEventListener('touchstart', handleJumpPress);
+    jumpButton.addEventListener('touchstart', onJumpPress);
 
-    jumpButton.addEventListener('touchend', handleJumpRelease);
+    jumpButton.addEventListener('touchend', onJumpRelease);
 
     const gamepad = document.querySelector('#gamepad-overlay');
-    joystick.on('move', handleTouch);
-    joystick.on('end', handleEnd);
+    joystick.on('move', onTouch);
+    joystick.on('end', onEnd);
     
     gamepad.style.display = 'block';
 }
 
-function handleTouch(evt, data) {
+function onTouch(evt, data) {
     const player = new Player(); 
     const x = -data.vector.x;
     const z = data.vector.y; //the y-axis is up for some reason 
     player.controllerDirection.set(x, 0, z);
 }
 
-function handleEnd(evt, data) {
+function onEnd(evt, data) {
     const player = new Player();
     player.controllerDirection.set(0,0,0)
 }
 
-function handleJumpPress(evt) {
+function onJumpPress(evt) {
     evt.target.style.background = 'rgba(200,200,200,0.8)';
     const player = new Player();
     player.actions.jump = true;
 }
 
-function handleJumpRelease(evt) {
+function onJumpRelease(evt) {
     evt.target.style.background = 'rgba(200,200,200,0.5)';
     const player = new Player();
     player.actions.jump = false;

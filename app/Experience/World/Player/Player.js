@@ -63,8 +63,7 @@ export default class Player {
         this.actions = {};
     }
 
-    onDesktopPointerMove = (e) => {
-        if (document.pointerLockElement !== document.body) return;
+    onDesktopPointerMove = (e) => { if (document.pointerLockElement !== document.body) return;
         this.player.body.rotation.order = this.player.rotation.order;
         this.player.body.rotation.x -= e.movementY / 500;
         this.player.body.rotation.y -= e.movementX / 500;
@@ -164,7 +163,8 @@ export default class Player {
     addEventListeners() {
         document.addEventListener("keydown", this.onKeyDown);
         document.addEventListener("keyup", this.onKeyUp);
-        document.addEventListener("pointermove", this.onDesktopPointerMove); document.addEventListener("pointerdown", this.onPointerDown);
+        document.addEventListener("pointermove", this.onDesktopPointerMove);
+        document.addEventListener("pointerdown", this.onPointerDown);
         document.addEventListener('touchstart', function (event) {
             if (!event.target.closest('#joystick-container')) {
                 event.preventDefault();  // Prevents the focus loss issue
