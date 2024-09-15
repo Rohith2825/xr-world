@@ -28,11 +28,33 @@ function createJoystick(size) {
     return joystick;
 }
 
+function createGamePadArea() {
+    const gamepadOverlay = document.createElement('div');
+    gamepadOverlay.classList.add('gamepad-overlay', 'overlay');
+    gamepadOverlay.id = 'gamepad-overlay';
+
+    const joystickContainer = document.createElement('div');
+    joystickContainer.classList.add('joystick-container', 'overlay');
+    joystickContainer.id = 'joystick-container';
+
+    gamepadOverlay.appendChild(joystickContainer);
+
+    const jumpButton = document.createElement('button');
+    jumpButton.classList.add('jump-button', 'overlay');
+    jumpButton.id = 'jump-button';
+    jumpButton.innerHTML = '⇪';
+
+    gamepadOverlay.appendChild(jumpButton);
+
+    document.body.appendChild(gamepadOverlay);
+    return jumpButton
+}
+
 export default function displayMobileControls() {
 
     const DEFAULT_BUTTON_SIZE = 120;
+    const jumpButton = createGamePadArea(); 
     const joystick = createJoystick(DEFAULT_BUTTON_SIZE);
-    const jumpButton = document.querySelector('#jump-button');
     jumpButton.addEventListener('touchstart', handleJumpPress);
 
     jumpButton.addEventListener('touchend', handleJumpRelease);
