@@ -18,8 +18,7 @@ export default class Player {
         this.camera = this.experience.camera;
         this.octree = this.experience.world.octree;
 
-        this.initPlayer();
-        this.initControls();
+        this.initPlayer(); this.initControls();
 
         this.addEventListeners();
     }
@@ -30,8 +29,7 @@ export default class Player {
 
         this.player.onFloor = false;
         this.player.gravity = 60;
-        this.controllerDirection = new THREE.Vector3();
-        this.upVector = new THREE.Vector3(0, 0, 1);
+        this.controllerDirection = new THREE.Vector3(); this.upVector = new THREE.Vector3(0, 0, 1);
         this.player.spawn = {
             position: new THREE.Vector3(),
             rotation: new THREE.Euler(),
@@ -50,6 +48,13 @@ export default class Player {
 
         this.player.speedMultiplier = 0.8;
 
+        this.isSwiping = false;
+        this.firstTouch = true;
+        this.startX = 0;
+        this.startY = 0;
+        this.delta = 1.5
+
+
         this.player.collider = new Capsule(
             new THREE.Vector3(),
             new THREE.Vector3(),
@@ -67,12 +72,44 @@ export default class Player {
         this.player.body.rotation.order = this.player.rotation.order;
         this.player.body.rotation.x -= e.movementY / 500;
         this.player.body.rotation.y -= e.movementX / 500;
-
+        
         this.player.body.rotation.x = THREE.MathUtils.clamp(
             this.player.body.rotation.x,
             -Math.PI / 2, Math.PI / 2
         );
     };
+
+
+    onMobileDeviceMove(event) {
+        if (event.target.closest('#joystick-container')) return; 
+        if (event.target.closest('#jump-button')) return; 
+
+        if (this.firstTouch) {
+            this.startX = event.pageX;
+            this.startY = event.pageY;
+            this.firstTouch = false;
+        } else {
+            const diffX = event.pageX - this.startX;
+            const diffY = event.pageY - this.startY;
+
+            // Rotate camera based on the touch movements
+            this.player.body.rotation.order = this.player.rotation.order;
+            this.player.body.rotation.y -= diffX / 300;  // Adjust X axis rotation
+            this.player.body.rotation.x -= diffY / 300;  // Adjust Y axis rotation
+
+            // Clamping the vertical rotation to prevent flipping the camera
+            this.player.body.rotation.x = THREE.MathUtils.clamp(
+                this.player.body.rotation.x,
+                -Math.PI / 2, Math.PI / 2
+            );
+
+            // Update starting points for continuous touch movement
+            this.startX = event.pageX;
+            this.startY = event.pageY;
+
+            this.isSwiping = true;  // Mark swiping as active
+        }
+    }
 
     onKeyDown = (e) => {
         if (document.pointerLockElement !== document.body) return;
@@ -107,8 +144,7 @@ export default class Player {
         }
         if (e.code === "KeyS") {
             this.actions.backward = false;
-        }
-        if (e.code === "KeyA") {
+        } if (e.code === "KeyA") {
             this.actions.left = false;
         }
         if (e.code === "KeyD") {
@@ -163,14 +199,34 @@ export default class Player {
     addEventListeners() {
         document.addEventListener("keydown", this.onKeyDown);
         document.addEventListener("keyup", this.onKeyUp);
-        document.addEventListener("pointermove", this.onDesktopPointerMove);
+        document.addEventListener("pointermove", (event) => {
+            if(event.pointerType === "touch"){
+                this.onMobileDeviceMove(event);
+            } else {
+                this.onDesktopPointerMove(event)
+            }
+        });
         document.addEventListener("pointerdown", this.onPointerDown);
         document.addEventListener('touchstart', function (event) {
-            if (!event.target.closest('#joystick-container')) {
-                event.preventDefault();  // Prevents the focus loss issue
+            if (!event.target.closest('#joystick-container')) { event.preventDefault();  // Prevents the focus loss issue
             }
         }, { passive: false });
+        document.addEventListener('pointerdown', (event) => {
+            if (event.target.closest('#joystick-container')) return;
+            if (event.target.closest('#jump-button')) return; 
+            if (event.pointerType === 'touch') {
+                this.firstTouch = true;  // Reset touch tracking
+                this.startX = event.pageX;
+                this.startY = event.pageY;
+                this.isSwiping = false;
+            } });
 
+        document.addEventListener('pointerup', (event) => {
+            if (event.pointerType === 'touch') {
+                this.isSwiping = false;
+                this.firstTouch = true;  // Reset after touch ends
+            }
+        });
     }
 
     resize() { }
@@ -186,10 +242,6 @@ export default class Player {
         this.player.collider.end.y += this.player.height;
     }
 
-
-
-
-
     updateMobile() {
         const speed =
             (this.player.onFloor ? 1.75 : 0.2) *
@@ -198,12 +250,17 @@ export default class Player {
         //The amount of distance we travel between each frame
         let speedDelta = this.time.delta * speed * 1.6;
 
-        const angle = this.getForwardVector().angleTo(this.upVector);
-        const rotationAxis = new THREE.Vector3(0, 1, 0);
-        const movementDirection = this.controllerDirection
-            .clone()
-            .applyAxisAngle(rotationAxis, angle);
+        // const angle = this.getForwardVector().angleTo(this.upVector);
+        // const rotationAxis = new THREE.Vector3(0, 1, 0);
+        // const movementDirection = this.controllerDirection
+        //     .clone()
+        //     .applyAxisAngle(rotationAxis, angle);
 
+        const yawRotation = this.camera.perspectiveCamera.rotation.y;
+        yawRotation
+        const movementDirection = this.controllerDirection.clone().applyAxisAngle(new THREE.Vector3(0, 1, 0), yawRotation);
+
+movementDirection.normalize();        
         this.player.velocity.add(movementDirection.multiplyScalar(speedDelta));
 
         if (this.player.onFloor) {
@@ -248,8 +305,7 @@ export default class Player {
         let speedDelta = this.time.delta * speed;
 
         if (this.actions.run) {
-            speedDelta *= 1.6;
-        }
+            speedDelta *= 1.6; }
         if (this.actions.forward) {
             this.player.velocity.add(
                 this.getForwardVector().multiplyScalar(speedDelta)

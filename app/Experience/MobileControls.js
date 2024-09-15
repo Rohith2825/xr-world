@@ -68,8 +68,8 @@ export default function displayMobileControls() {
 
 function onTouch(evt, data) {
     const player = new Player(); 
-    const x = -data.vector.x;
-    const z = data.vector.y; //the y-axis is up for some reason 
+    const x = data.vector.x;
+    const z = -data.vector.y; //the y-axis is up for some reason //negative for some reason
     player.controllerDirection.set(x, 0, z);
 }
 
