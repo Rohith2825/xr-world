@@ -66,26 +66,26 @@ export default function displayMobileControls() {
     gamepad.style.display = 'block';
 }
 
-function onTouch(evt, data) {
+function onTouch(e, data) {
     const player = new Player(); 
     const x = data.vector.x;
     const z = -data.vector.y; //the y-axis is up for some reason //negative for some reason
     player.controllerDirection.set(x, 0, z);
 }
 
-function onEnd(evt, data) {
+function onEnd(e, data) {
     const player = new Player();
     player.controllerDirection.set(0,0,0)
 }
 
-function onJumpPress(evt) {
-    evt.target.style.background = 'rgba(200,200,200,0.8)';
+function onJumpPress(e) {
+    e.target.style.background = 'rgba(200,200,200,0.8)';
     const player = new Player();
     player.actions.jump = true;
 }
 
-function onJumpRelease(evt) {
-    evt.target.style.background = 'rgba(200,200,200,0.5)';
+function onJumpRelease(e) {
+    e.target.style.background = 'rgba(200,200,200,0.5)';
     const player = new Player();
     player.actions.jump = false;
 }

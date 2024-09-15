@@ -80,17 +80,17 @@ export default class Player {
     };
 
 
-    onMobileDeviceMove(event) {
-        if (event.target.closest('#joystick-container')) return; 
-        if (event.target.closest('#jump-button')) return; 
+    onMobileDeviceMove(e) {
+        if (e.target.closest('#joystick-container')) return; 
+        if (e.target.closest('#jump-button')) return; 
 
         if (this.firstTouch) {
-            this.startX = event.pageX;
-            this.startY = event.pageY;
+            this.startX = e.pageX;
+            this.startY = e.pageY;
             this.firstTouch = false;
         } else {
-            const diffX = event.pageX - this.startX;
-            const diffY = event.pageY - this.startY;
+            const diffX = e.pageX - this.startX;
+            const diffY = e.pageY - this.startY;
 
             this.player.body.rotation.order = this.player.rotation.order;
             this.player.body.rotation.y -= diffX / 200;  
@@ -101,8 +101,8 @@ export default class Player {
                 -Math.PI / 2, Math.PI / 2
             );
 
-            this.startX = event.pageX;
-            this.startY = event.pageY;
+            this.startX = e.pageX;
+            this.startY = e.pageY;
 
             this.isSwiping = true;  
         }
@@ -196,30 +196,30 @@ export default class Player {
     addEventListeners() {
         document.addEventListener("keydown", this.onKeyDown);
         document.addEventListener("keyup", this.onKeyUp);
-        document.addEventListener("pointermove", (event) => {
-            if(event.pointerType === "touch"){
-                this.onMobileDeviceMove(event);
+        document.addEventListener("pointermove", (e) => {
+            if(e.pointerType === "touch"){
+                this.onMobileDeviceMove(e);
             } else {
-                this.onDesktopPointerMove(event)
+                this.onDesktopPointerMove(e)
             }
         });
         document.addEventListener("pointerdown", this.onPointerDown);
-        document.addEventListener('touchstart', function (event) {
-            if (!event.target.closest('#joystick-container')) { event.preventDefault();  // Prevents the focus loss issue
+        document.addEventListener('touchstart', function (e) {
+            if (!e.target.closest('#joystick-container')) { e.preventDefault();  // Prevents the focus loss issue
             }
         }, { passive: false });
-        document.addEventListener('pointerdown', (event) => {
-            if (event.target.closest('#joystick-container')) return;
-            if (event.target.closest('#jump-button')) return; 
-            if (event.pointerType === 'touch') {
+        document.addEventListener('pointerdown', (e) => {
+            if (e.target.closest('#joystick-container')) return;
+            if (e.target.closest('#jump-button')) return; 
+            if (e.pointerType === 'touch') {
                 this.firstTouch = true;  // Reset touch tracking
-                this.startX = event.pageX;
-                this.startY = event.pageY;
+                this.startX = e.pageX;
+                this.startY = e.pageY;
                 this.isSwiping = false;
             } });
 
-        document.addEventListener('pointerup', (event) => {
-            if (event.pointerType === 'touch') {
+        document.addEventListener('pointerup', (e) => {
+            if (e.pointerType === 'touch') {
                 this.isSwiping = false;
                 this.firstTouch = true;  // Reset after touch ends
             }
