@@ -92,22 +92,19 @@ export default class Player {
             const diffX = event.pageX - this.startX;
             const diffY = event.pageY - this.startY;
 
-            // Rotate camera based on the touch movements
             this.player.body.rotation.order = this.player.rotation.order;
-            this.player.body.rotation.y -= diffX / 300;  // Adjust X axis rotation
-            this.player.body.rotation.x -= diffY / 300;  // Adjust Y axis rotation
+            this.player.body.rotation.y -= diffX / 200;  
+            this.player.body.rotation.x -= diffY / 200;  
 
-            // Clamping the vertical rotation to prevent flipping the camera
             this.player.body.rotation.x = THREE.MathUtils.clamp(
                 this.player.body.rotation.x,
                 -Math.PI / 2, Math.PI / 2
             );
 
-            // Update starting points for continuous touch movement
             this.startX = event.pageX;
             this.startY = event.pageY;
 
-            this.isSwiping = true;  // Mark swiping as active
+            this.isSwiping = true;  
         }
     }
 
@@ -326,8 +323,7 @@ movementDirection.normalize();
                 this.getSideVector().multiplyScalar(speedDelta * 0.75)
             );
         }
-
-        if (this.player.onFloor) {
+if (this.player.onFloor) {
             if (this.actions.jump) {
                 this.player.velocity.y = 15;
             }
