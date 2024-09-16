@@ -59,6 +59,18 @@ export default [
             "/textures/skybox/nz.webp",
           ],
         },
+        {
+          name: "skyBoxTexturen",
+          type: "cubeTexture",
+          path: [
+            "/textures/skyboxn/px.webp",
+            "/textures/skyboxn/nx.webp",
+            "/textures/skyboxn/py.webp",
+            "/textures/skyboxn/ny.webp",
+            "/textures/skyboxn/pz.webp",
+            "/textures/skyboxn/nz.webp",
+          ],
+        },
       ],
     },
     castleInterior: {
