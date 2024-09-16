@@ -1,4 +1,3 @@
-import * as THREE from "three";
 import { EventEmitter } from "events";
 import Experience from "../Experience.js";
 
@@ -7,7 +6,6 @@ import { Octree } from "three/examples/jsm/math/Octree";
 import Player from "./Player/Player.js";
 
 import Whiterun from "./Whiterun/Whiterun.js";
-import Interior from "./Interior/Interior.js";
 
 export default class World extends EventEmitter {
     constructor() {
@@ -38,6 +36,8 @@ export default class World extends EventEmitter {
     }
 
     update() {
-        if (this.player) this.player.update();
+        if (this.player) {
+            this.player.update();
+        } 
     }
 }

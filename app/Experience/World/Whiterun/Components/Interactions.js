@@ -24,7 +24,7 @@ export default class Interactions {
         this.interactions.children.find((child) => {
             child.material = new THREE.MeshBasicMaterial({
                 // map: this.interactions_texture,
-                color: 0xff0000,
+                color: 0xffffff,
             });
         });
 
