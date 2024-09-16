@@ -12,9 +12,9 @@ export default class Environment {
     }
 
     init() {
-        this.skyBoxTexturen = this.resources.items.whiterun.skyBoxTexturen;
-        this.skyBoxTexturen.encoding = THREE.sRGBEncoding;
-        this.scene.background = this.skyBoxTexturen;
+        this.skyBoxTexture = this.resources.items.whiterun.skyBoxTexture;
+        this.skyBoxTexture.encoding = THREE.sRGBEncoding;
+        this.scene.background = this.skyBoxTexture;
     }
 
 

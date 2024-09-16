@@ -157,12 +157,39 @@ export default class Player {
         }
     };
 
+    // onPointerDown = (e) => {
+    //     if (e.pointerType === "mouse") {
+    //         document.body.requestPointerLock();
+    //         return;
+    //     }
+    // };
+
+
     onPointerDown = (e) => {
         if (e.pointerType === "mouse") {
             document.body.requestPointerLock();
+            this.raycast();  // Add this line to call raycast method on pointer down
             return;
         }
+        // For touch, you can also call raycast if needed
+        if (e.pointerType === "touch") {
+            this.raycast();  // Optional for touch
+        }
     };
+    
+
+
+    raycast() {
+        this.player.raycaster.setFromCamera({ x: 0, y: 0 }, this.camera.perspectiveCamera);
+    
+        const intersects = this.player.raycaster.intersectObjects(this.experience.scene.children, true);
+    
+        if (intersects.length > 0) {
+            console.log("Intersected object:", intersects[0].object);
+            // Handle interaction with the object
+        }
+    }
+    
 
     playerCollisions() {
         const result = this.octree.capsuleIntersect(this.player.collider);

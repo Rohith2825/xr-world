@@ -18,9 +18,19 @@ export default [
           path: "/models/buildings.glb",
         },
         {
-          name: "interactions",
+          name: "interactions1",
           type: "glbModel",
-          path: "/models/outside_interactions.glb",
+          path: "/models/inter_elem.glb",
+        },
+        {
+          name: "interactions2",
+          type: "glbModel",
+          path: "/models/inter_elem1.glb",
+        },
+        {
+          name: "interactions3",
+          type: "glbModel",
+          path: "/models/inter_elem2.glb",
         },
         {
           name: "walls",

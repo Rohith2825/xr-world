@@ -9,7 +9,7 @@ export default class WhiteRun {
     constructor() {
         this.items = new Items();
         this.landscape = new Landscape();
-        // this.interactions = new Interactions();
+        this.interactions = new Interactions();
         this.buildings = new Buildings();
         this.walls = new Walls();
         this.environment = new Environment();
