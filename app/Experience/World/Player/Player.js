@@ -179,16 +179,51 @@ export default class Player {
     
 
 
+    // raycast() {
+    //     this.player.raycaster.setFromCamera({ x: 0, y: 0 }, this.camera.perspectiveCamera);
+    
+    //     const intersects = this.player.raycaster.intersectObjects(this.experience.scene.children, true);
+    
+    //     if (intersects.length > 0) {
+    //         console.log("Intersected object:", intersects[0].object);
+    //         // Handle interaction with the object
+    //         showModal();
+    //     }
+    // }
+
+
     raycast() {
+        // Set raycaster from the camera
         this.player.raycaster.setFromCamera({ x: 0, y: 0 }, this.camera.perspectiveCamera);
     
+        // Check for intersections with objects in the scene
         const intersects = this.player.raycaster.intersectObjects(this.experience.scene.children, true);
     
-        if (intersects.length > 0) {
-            console.log("Intersected object:", intersects[0].object);
-            // Handle interaction with the object
+        // UUID and name to match
+        const targetObjects = [
+            { uuid: '47676f83-ba31-4804-8b94-89e1512e32cc', name: 'Dress_F2_0' },
+            { uuid: 'f700d2b0-54bb-4006-9ea3-387911127477', name: 'Pattern2D_15970001_D1_0' },
+            { uuid: 'ed238f4e-d667-4385-a492-c4d9346c1646', name: 'D1_MD1_0' }
+        ];
+    
+        // Iterate through the intersected objects
+        for (let i = 0; i < intersects.length; i++) {
+            const object = intersects[i].object;
+    
+            // Check if the object's UUID and name match any of the target objects
+            const isTargetObject = targetObjects.some(target => 
+                object.name === target.name
+            );
+    
+            if (isTargetObject) {
+                console.log("Intersected target object:", object);
+                // Handle interaction with the object
+                showModal();
+                break; // Exit loop after first match
+            }
         }
     }
+    
     
 
     playerCollisions() {
