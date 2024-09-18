@@ -8,7 +8,6 @@ export default class Environment {
         this.resources = this.experience.resources;
 
         this.init();
-        this.setMaterials();
     }
 
     init() {

@@ -61,6 +61,7 @@ export default class Player {
             0.35
         );
         this.update = (window.mobileAndTabletCheck() ? this.updateMobile : this.updateKeyboard);
+        this.lastRaycast = this.time.current;
     }
 
 
@@ -68,7 +69,7 @@ export default class Player {
         this.actions = {};
     }
 
-    onDesktopPointerMove = (e) => { if (document.pointerLockElement !== document.body) return;
+    onDesktopPointerMove = (e) => { if (document.pointerLockElement !== document.querySelector('.experience-canvas')) return;
         this.player.body.rotation.order = this.player.rotation.order;
         this.player.body.rotation.x -= e.movementY / 500;
         this.player.body.rotation.y -= e.movementX / 500;
@@ -81,7 +82,6 @@ export default class Player {
 
 
     onMobileDeviceMove(e) {
-        if (e.target.closest('#joystick-container')) return; 
         if (e.target.closest('#jump-button')) return; 
 
         if (this.firstTouch) {
@@ -109,7 +109,7 @@ export default class Player {
     }
 
     onKeyDown = (e) => {
-        if (document.pointerLockElement !== document.body) return;
+        if (document.pointerLockElement !== document.querySelector('.experience-canvas')) return;
 
         if (e.code === "KeyW") {
             this.actions.forward = true;
@@ -134,7 +134,7 @@ export default class Player {
     };
 
     onKeyUp = (e) => {
-        if (document.pointerLockElement !== document.body) return;
+        if (document.pointerLockElement !== document.querySelector('.experience-canvas')) return;
 
         if (e.code === "KeyW") {
             this.actions.forward = false;
@@ -159,37 +159,30 @@ export default class Player {
 
     // onPointerDown = (e) => {
     //     if (e.pointerType === "mouse") {
-    //         document.body.requestPointerLock();
+    //         document.querySelector('.experience-canvas').requestPointerLock();
     //         return;
     //     }
     // };
 
 
     onPointerDown = (e) => {
+        const timeElapsed = (this.time.current - this.lastRaycast)
+        const RAYCAST_COOLDOWN = 1000;
         if (e.pointerType === "mouse") {
-            document.body.requestPointerLock();
-            this.raycast();  // Add this line to call raycast method on pointer down
+            document.querySelector('.experience-canvas').requestPointerLock();
+            if (timeElapsed > RAYCAST_COOLDOWN){
+                this.current = this.lastRaycast;
+                this.raycast(); }
             return;
         }
-        // For touch, you can also call raycast if needed
         if (e.pointerType === "touch") {
-            this.raycast();  // Optional for touch
+            if (timeElapsed > RAYCAST_COOLDOWN){
+                this.current = this.lastRaycast;
+                this.raycast();
+            }
         }
     };
     
-
-
-    // raycast() {
-    //     this.player.raycaster.setFromCamera({ x: 0, y: 0 }, this.camera.perspectiveCamera);
-    
-    //     const intersects = this.player.raycaster.intersectObjects(this.experience.scene.children, true);
-    
-    //     if (intersects.length > 0) {
-    //         console.log("Intersected object:", intersects[0].object);
-    //         // Handle interaction with the object
-    //         showModal();
-    //     }
-    // }
 
 
     raycast() {
@@ -218,7 +211,7 @@ export default class Player {
             if (isTargetObject) {
                 console.log("Intersected target object:", object);
                 // Handle interaction with the object
-                showModal();
+                window.showModal();
                 break; // Exit loop after first match
             }
         }
@@ -258,32 +251,31 @@ export default class Player {
     addEventListeners() {
         document.addEventListener("keydown", this.onKeyDown);
         document.addEventListener("keyup", this.onKeyUp);
-        document.addEventListener("pointermove", (e) => {
+        const canvas = document.querySelector('.experience-canvas');
+        if(canvas)
+        canvas.addEventListener("pointermove", (e) => {
             if(e.pointerType === "touch"){
                 this.onMobileDeviceMove(e);
             } else {
                 this.onDesktopPointerMove(e)
             }
         });
-        document.addEventListener("pointerdown", this.onPointerDown);
-        document.addEventListener('touchstart', function (e) {
-            if (!e.target.closest('#joystick-container')) { e.preventDefault();  // Prevents the focus loss issue
-            }
-        }, { passive: false });
-        document.addEventListener('pointerdown', (e) => {
+        else console.log('No canvas?');
+        canvas.addEventListener("pointerdown", this.onPointerDown);
+        canvas.addEventListener('pointerdown', (e) => {
             if (e.target.closest('#joystick-container')) return;
             if (e.target.closest('#jump-button')) return; 
             if (e.pointerType === 'touch') {
-                this.firstTouch = true;  // Reset touch tracking
+                this.firstTouch = true;  
                 this.startX = e.pageX;
                 this.startY = e.pageY;
                 this.isSwiping = false;
             } });
 
-        document.addEventListener('pointerup', (e) => {
+        canvas.addEventListener('pointerup', (e) => {
             if (e.pointerType === 'touch') {
                 this.isSwiping = false;
-                this.firstTouch = true;  // Reset after touch ends
+                this.firstTouch = true;  
             }
         });
     }

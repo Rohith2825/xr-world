@@ -79,6 +79,7 @@ function onEnd(e, data) {
 }
 
 function onJumpPress(e) {
+    e.preventDefault();
     e.target.style.background = 'rgba(200,200,200,0.8)';
     const player = new Player();
     player.actions.jump = true;

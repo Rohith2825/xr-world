@@ -48,7 +48,7 @@
         modalBackdrop.style.display = "none";
         document.body.classList.remove("modal-open");
         crosshair.classList.remove("hidden");
-        document.querySelector('.experience-canvas').requestPointerLock();
+        document.body.requestPointerLock();
         if(window.mobileAndTabletCheck()){
           const gamepad = document.querySelector("#gamepad-overlay");
           gamepad.style.display = "block";
