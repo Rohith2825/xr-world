@@ -83,6 +83,7 @@ export default class Player {
 
     onMobileDeviceMove(e) {
         if (e.target.closest('#jump-button')) return; 
+        if (e.target.closest('#joystick-container')) return; 
 
         if (this.firstTouch) {
             this.startX = e.pageX;
