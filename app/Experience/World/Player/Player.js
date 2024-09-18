@@ -82,7 +82,6 @@ export default class Player {
 
 
     onMobileDeviceMove(e) {
-        if (e.target.closest('#jump-button')) return; 
         if (e.target.closest('#joystick-container')) return; 
 
         if (this.firstTouch) {
@@ -265,7 +264,6 @@ export default class Player {
         canvas.addEventListener("pointerdown", this.onPointerDown);
         canvas.addEventListener('pointerdown', (e) => {
             if (e.target.closest('#joystick-container')) return;
-            if (e.target.closest('#jump-button')) return; 
             if (e.pointerType === 'touch') {
                 this.firstTouch = true;  
                 this.startX = e.pageX;

@@ -39,25 +39,16 @@ function createGamePadArea() {
 
     gamepadOverlay.appendChild(joystickContainer);
 
-    const jumpButton = document.createElement('button');
-    jumpButton.classList.add('jump-button', 'overlay');
-    jumpButton.id = 'jump-button';
-    jumpButton.innerHTML = '⇪';
 
-    gamepadOverlay.appendChild(jumpButton);
 
     document.body.appendChild(gamepadOverlay);
-    return jumpButton
 }
 
 export default function displayMobileControls() {
 
     const DEFAULT_BUTTON_SIZE = 120;
-    const jumpButton = createGamePadArea(); 
+    createGamePadArea(); 
     const joystick = createJoystick(DEFAULT_BUTTON_SIZE);
-    jumpButton.addEventListener('touchstart', onJumpPress);
-
-    jumpButton.addEventListener('touchend', onJumpRelease);
 
     const gamepad = document.querySelector('#gamepad-overlay');
     joystick.on('move', onTouch);
@@ -76,17 +67,4 @@ function onTouch(e, data) {
 function onEnd(e, data) {
     const player = new Player();
     player.controllerDirection.set(0,0,0)
-}
-
-function onJumpPress(e) {
-    e.preventDefault();
-    e.target.style.background = 'rgba(200,200,200,0.8)';
-    const player = new Player();
-    player.actions.jump = true;
-}
-
-function onJumpRelease(e) {
-    e.target.style.background = 'rgba(200,200,200,0.5)';
-    const player = new Player();
-    player.actions.jump = false;
 }
